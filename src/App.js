@@ -1,9 +1,9 @@
-function App() {
-  const name = 'React';
+import Header from './components/Header'
 
+function App() {
   return (
     <div className="container">
-      <h1>Hello from {name}!</h1>
+      <Header title='Task Tracker' />
     </div>
   );
 }
