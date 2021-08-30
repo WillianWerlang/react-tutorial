@@ -1,7 +1,8 @@
 const Task = ({ task }) => {
   return (
-    <div>
+    <div className="task">
       <h3 key={task.id}>{task.text}</h3>
+      <p>{task.date}</p>
     </div>
   );
 };

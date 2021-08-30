@@ -1,29 +1,30 @@
-import { useState } from 'react' 
-import Header from './components/Header'
-import Tasks from './components/Tasks'
+import { useState } from "react";
+import Header from "./components/Header";
+import Tasks from "./components/Tasks";
 
 function App() {
-  const [tasks, setTasks] = useState(
-    [
-      {
-        id: 1,
-        text: 'Doctors Appointment'
-      },
-      {
-        id: 2,
-        text: 'Meeting at school'
-      },
-      {
-        id: 3,
-        text: 'Something something'
-      }
-    ]
-  )
+  const [tasks, setTasks] = useState([
+    {
+      id: 1,
+      text: "Doctors Appointment",
+      date: "July 1st 14:00",
+    },
+    {
+      id: 2,
+      text: "Meeting at school",
+      date: "July 3rd 18:00",
+    },
+    {
+      id: 3,
+      text: "Food shooping",
+      date: "July 9th 15:30",
+    },
+  ]);
 
   return (
     <div className="container">
-      <Header title='Task Tracker' />
-      <Tasks tasks={tasks}/>
+      <Header title="Task Tracker" />
+      <Tasks tasks={tasks} />
     </div>
   );
 }
