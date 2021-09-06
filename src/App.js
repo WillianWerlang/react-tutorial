@@ -1,42 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Tasks from './components/Tasks';
 import AddTask from './components/AddTask';
 
 function App() {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      text: 'Doctors Appointment',
-      date: 'July 1st 14:00',
-      reminder: true,
-    },
-    {
-      id: 2,
-      text: 'Meeting at school',
-      date: 'July 3rd 18:00',
-      reminder: true,
-    },
-    {
-      id: 3,
-      text: 'Food shooping',
-      date: 'July 9th 15:30',
-      reminder: true,
-    },
-  ]);
-
+  const [tasks, setTasks] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
 
-  const onDelete = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
-  };
+  useEffect(() => {
+    const getTasks = async () => {
+      const tasksFromServer = await fetchTasks();
+      setTasks(tasksFromServer);
+    };
 
-  const onToggle = (id) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, reminder: !task.reminder } : task
-      )
-    );
+    getTasks();
+  }, []);
+
+  const fetchTasks = async () => {
+    const res = await fetch('http://localhost:5000/tasks');
+    const data = await res.json();
+    return data;
   };
 
   const onToggleAddForm = () => {
@@ -48,6 +31,18 @@ function App() {
     var newTask = { ...task, id };
 
     setTasks([...tasks, newTask]);
+  };
+
+  const onDelete = (id) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
+
+  const onToggle = (id) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, reminder: !task.reminder } : task
+      )
+    );
   };
 
   return (
