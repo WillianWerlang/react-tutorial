@@ -9,8 +9,7 @@ function App() {
 
   useEffect(() => {
     const getTasks = async () => {
-      const tasksFromServer = await fetchTasks();
-      setTasks(tasksFromServer);
+      setTasks(await fetchTasks());
     };
 
     getTasks();
@@ -22,29 +21,43 @@ function App() {
     return data;
   };
 
-  const onToggleAddForm = () => {
-    setShowAddForm(!showAddForm);
+  const fetchTask = async (id) => {
+    const res = await fetch(`http://localhost:5000/tasks/${id}`);
+    const data = await res.json();
+    return data;
   };
 
-  const onAdd = (task) => {
-    var id = Math.floor(Math.random() * 1000 + 1);
-    var newTask = { ...task, id };
+  const onAdd = async (task) => {
+    await fetch('http://localhost:5000/tasks', {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify(task),
+    });
 
-    setTasks([...tasks, newTask]);
+    setTasks(await fetchTasks());
   };
 
   const onDelete = async (id) => {
     await fetch(`http://localhost:5000/tasks/${id}`, { method: 'DELETE' });
 
-    setTasks(tasks.filter((task) => task.id !== id));
+    setTasks(await fetchTasks());
   };
 
-  const onToggle = (id) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, reminder: !task.reminder } : task
-      )
-    );
+  const onToggleReminder = async (id) => {
+    const task = await fetchTask(id);
+    task.reminder = !task.reminder;
+
+    await fetch(`http://localhost:5000/tasks/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify(task),
+    });
+
+    setTasks(await fetchTasks());
+  };
+
+  const onToggleAddForm = () => {
+    setShowAddForm(!showAddForm);
   };
 
   return (
@@ -58,7 +71,11 @@ function App() {
       {showAddForm && <AddTask onAdd={onAdd} />}
 
       {tasks.length > 0 ? (
-        <Tasks onDelete={onDelete} onToggle={onToggle} tasks={tasks} />
+        <Tasks
+          onDelete={onDelete}
+          onToggleReminder={onToggleReminder}
+          tasks={tasks}
+        />
       ) : (
         'No tasks to show'
       )}
